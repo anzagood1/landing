@@ -1,5 +1,5 @@
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+import { getDatabase, ref, set, push, get } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
 
 // Construir la configuración usando variables de entorno Vite (prefijo VITE_FIREBASE_)
 // o, si no están disponibles (p. ej. abriendo index.html directamente), usar window.__FIREBASE_CONFIG como fallback.
@@ -46,4 +46,35 @@ const safevote = (productID) => {
     }
   })
 };
-export { safevote };
+
+// Función flecha asíncrona para obtener todos los votos de la colección 'votes'
+const getVotes = async () => {
+  try {
+    // Obtener referencia a la colección 'votes'
+    const votesRef = ref(database, 'votes');
+    
+    // Leer los datos una sola vez con get()
+    const snapshot = await get(votesRef);
+    
+    // Verificar si existen datos
+    if (snapshot.exists()) {
+      return {
+        status: true,
+        data: snapshot.val()
+      };
+    } else {
+      return {
+        status: false,
+        message: "No hay datos disponibles"
+      };
+    }
+  } catch (error) {
+    console.error("Error obteniendo votos:", error);
+    return {
+      status: false,
+      message: "Error al obtener los datos"
+    };
+  }
+};
+
+export { safevote, getVotes };
