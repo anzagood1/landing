@@ -3,20 +3,27 @@ import {fetchProducts} from './functions.js';
 import {safevote} from './firebase.js';
 
 let enableForm = () => {
-    const form = document.getElementById("form-voting");
+    // Support both form ids: 'form_voting' (underscore) and 'form-voting' (dash)
+    const form = document.getElementById("form_voting") || document.getElementById("form-voting");
     if (form) {
 
         form.addEventListener("submit", (event) => {
             event.preventDefault();
 
-            const productID = document.getElementById("select_product").value;
+            const productSelect = document.getElementById("select_product");
+            const productID = productSelect ? productSelect.value : null;
+
+            if (!productID) {
+                alert('Seleccione un producto antes de votar');
+                return;
+            }
 
             safevote(productID)
             .then(response =>{
-                if (response.status){
-                    alert(response.message);
+                if (response && response.status){
+                    alert(response.message || 'Voto guardado');
                 } else {
-                    alert(response.message);
+                    alert(response && response.message ? response.message : 'Error al guardar voto');
                 }
             });
         });

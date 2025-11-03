@@ -6,6 +6,7 @@ import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/
 const firebaseConfig = {
   apiKey: (import.meta && import.meta.env && import.meta.env.VITE_FIREBASE_API_KEY) || (window && window.__FIREBASE_CONFIG && window.__FIREBASE_CONFIG.apiKey) || null,
   authDomain: (import.meta && import.meta.env && import.meta.env.VITE_FIREBASE_AUTH_DOMAIN) || (window && window.__FIREBASE_CONFIG && window.__FIREBASE_CONFIG.authDomain) || null,
+  databaseURL: (import.meta && import.meta.env && import.meta.env.VITE_FIREBASE_DATABASE_URL) || (window && window.__FIREBASE_CONFIG && window.__FIREBASE_CONFIG.databaseURL) || null,
   projectId: (import.meta && import.meta.env && import.meta.env.VITE_FIREBASE_PROJECT_ID) || (window && window.__FIREBASE_CONFIG && window.__FIREBASE_CONFIG.projectId) || null,
   storageBucket: (import.meta && import.meta.env && import.meta.env.VITE_FIREBASE_STORAGE_BUCKET) || (window && window.__FIREBASE_CONFIG && window.__FIREBASE_CONFIG.storageBucket) || null,
   messagingSenderId: (import.meta && import.meta.env && import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID) || (window && window.__FIREBASE_CONFIG && window.__FIREBASE_CONFIG.messagingSenderId) || null,
