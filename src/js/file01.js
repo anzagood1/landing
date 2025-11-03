@@ -1,5 +1,27 @@
 "use strict";
 import {fetchProducts} from './functions.js';
+import {safevote} from './firebase.js';
+
+let enableForm = () => {
+    const form = document.getElementById("form-voting");
+    if (form) {
+
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            const productID = document.getElementById("select_product").value;
+
+            safevote(productID)
+            .then(response =>{
+                if (response.status){
+                    alert(response.message);
+                } else {
+                    alert(response.message);
+                }
+            });
+        });
+    }
+}
 const showToast = () => {
     const toast = document.getElementById("toast-interactive");
     if (toast) {
@@ -15,10 +37,6 @@ const showVideo = () => {
     }
 };
 
-(() => {
-    showToast();
-    showVideo();
-})();
 
 const renderProducts = () => {
     fetchProducts('https://data-dawm.github.io/datum/reseller/products.json')
@@ -76,6 +94,10 @@ const renderProducts = () => {
     });
 };
 
+
 (() => {
-  renderProducts();
+    showToast();
+    showVideo();
+    renderProducts();
+    enableForm();
 })();

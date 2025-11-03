@@ -6,8 +6,8 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
       <link rel="icon" type="image/svg+xml" href="/vite.svg" />
       <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-      <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
-      <title>Landing Page</title>
+            <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+            <title>Landing Page</title>
   </head>
   <body>
     
@@ -125,8 +125,33 @@
         </div>
     </div>
 </section>
+    <section class="flex flex-col items-center justify-center bg-white py-8">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+       <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Vota por tu producto preferido</h2>
+
+       <div class="mb-6">
+       <form id="form_voting" class="relative flex items-center">
+          <select id="select_product"
+             class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+             <option value="" disabled selected>Seleccione un producto</option>
+             <option value="product1">Producto 1</option>
+             <option value="product2">Producto 2</option>
+             <option value="product3">Producto 3</option>
+          </select>
+          <button
+             class="ml-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+             VOTAR
+          </button>
+       </form>
+       </div>
+
+       <div id="results" class="border border-gray-300 rounded-lg h-52 w-full p-2 bg-gray-50">
+          <p class="text-gray-500 text-center mt-16">Resultado de la votación</p>
+       </div>
+    </div>
+</section>
     <div id="toast-interactive"
-         class="fixed right-5 bottom-5 flex items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x divide-gray-200 rounded-lg shadow-sm dark:text-gray-400 dark:divide-gray-700 dark:bg-gray-800 hidden"
+         class=" hidden fixed right-5 bottom-5 flex items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x divide-gray-200 rounded-lg shadow-sm dark:text-gray-400 dark:divide-gray-700 dark:bg-gray-800 "
          role="alert">
          <div class="flex">
 
@@ -156,7 +181,28 @@
              </button>
          </div>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-    <script type = "module" src="src/js/file01.js" ></script>
+        <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+
+        <!-- Exponer la configuración de Firebase en window antes de cargar los módulos que la usan -->
+        <script>
+            window.__FIREBASE_CONFIG = {
+                apiKey: "AIzaSyCkKjFhjEXFn0pqaPfc13xksS2AYl_h-3Y",
+                authDomain: "landing-31834.firebaseapp.com",
+                projectId: "landing-31834",
+                storageBucket: "landing-31834.firebasestorage.app",
+                messagingSenderId: "724791024197",
+                appId: "1:724791024197:web:ad9d1e97dce1eb386ee12c",
+                measurementId: "G-EY1PSD4H1V"
+            };
+        </script>
+
+        <script type = "module" src="src/js/file01.js" ></script>
+        <script type="module">
+            // Inicialización adicional (analytics) — puede quedarse aquí si quieres usar Firebase Analytics
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+            import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
+            const app = initializeApp(window.__FIREBASE_CONFIG);
+            const analytics = getAnalytics(app);
+        </script>
   </body>
 </html>
