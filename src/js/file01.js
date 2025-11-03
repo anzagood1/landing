@@ -1,22 +1,29 @@
 "use strict";
 import {fetchProducts} from './functions.js';
-import {safevote} from './firebase.js';
+import {safevote, getVotes} from './firebase.js';
 
 let enableForm = () => {
-    const form = document.getElementById("form-voting");
+    // Support both form ids: 'form_voting' (underscore) and 'form-voting' (dash)
+    const form = document.getElementById("form_voting") || document.getElementById("form-voting");
     if (form) {
 
         form.addEventListener("submit", (event) => {
             event.preventDefault();
 
-            const productID = document.getElementById("select_product").value;
+            const productSelect = document.getElementById("select_product");
+            const productID = productSelect ? productSelect.value : null;
+
+            if (!productID) {
+                alert('Seleccione un producto antes de votar');
+                return;
+            }
 
             safevote(productID)
             .then(response =>{
-                if (response.status){
-                    alert(response.message);
+                if (response && response.status){
+                    alert(response.message || 'Voto guardado');
                 } else {
-                    alert(response.message);
+                    alert(response && response.message ? response.message : 'Error al guardar voto');
                 }
             });
         });
@@ -94,10 +101,86 @@ const renderProducts = () => {
     });
 };
 
+// Función flecha asíncrona para mostrar los votos en una tabla
+const displayVotes = async () => {
+    try {
+        // Obtener el contenedor donde se mostrará la tabla
+        const resultsContainer = document.getElementById('results');
+        if (!resultsContainer) {
+            console.error('Elemento #results no encontrado');
+            return;
+        }
+
+        // Obtener los votos desde Firebase
+        const response = await getVotes();
+
+        if (!response.status) {
+            resultsContainer.innerHTML = `<p class="text-gray-500 text-center mt-16">${response.message}</p>`;
+            return;
+        }
+
+        // Contar votos por producto
+        const voteCounts = {};
+        const votes = response.data;
+
+        Object.keys(votes).forEach(voteId => {
+            const vote = votes[voteId];
+            const productID = vote.productID;
+            
+            if (voteCounts[productID]) {
+                voteCounts[productID]++;
+            } else {
+                voteCounts[productID] = 1;
+            }
+        });
+
+        // Crear la tabla HTML
+        let tableHTML = `
+            <div class="overflow-auto h-full">
+                <table class="min-w-full bg-white dark:bg-gray-800 text-sm">
+                    <thead class="bg-gray-100 dark:bg-gray-700">
+                        <tr>
+                            <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200 font-semibold">Producto</th>
+                            <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200 font-semibold">Total de Votos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        // Iterar sobre los productos y sus votos
+        Object.keys(voteCounts).forEach(productID => {
+            const count = voteCounts[productID];
+            tableHTML += `
+                <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900">
+                    <td class="px-4 py-2 text-gray-800 dark:text-gray-300">${productID}</td>
+                    <td class="px-4 py-2 text-gray-800 dark:text-gray-300">${count}</td>
+                </tr>
+            `;
+        });
+
+        tableHTML += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        // Insertar la tabla en el contenedor
+        resultsContainer.innerHTML = tableHTML;
+
+    } catch (error) {
+        console.error('Error en displayVotes:', error);
+        const resultsContainer = document.getElementById('results');
+        if (resultsContainer) {
+            resultsContainer.innerHTML = `<p class="text-red-500 text-center mt-16">Error al cargar los votos</p>`;
+        }
+    }
+};
+
 
 (() => {
     showToast();
     showVideo();
     renderProducts();
     enableForm();
+    displayVotes();
 })();
